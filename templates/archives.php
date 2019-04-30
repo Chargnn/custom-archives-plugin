@@ -23,10 +23,23 @@ $post_types = array_diff($post_types, ['attachment', 'revision', 'custom_css',
     <h2 class="nav-tab-wrapper">
 
     <?php foreach($post_types as $post_type): ?>
-        <a href="?page=cap_archives&tab=<?= $post_type; ?>" class="nav-tab"><?= $post_type; ?></a>
+        <?php if(isset($_GET['tab']) && $_GET['tab'] === $post_type): ?>
+            <a href="?page=cap_archives&tab=<?= $post_type; ?>" class="nav-tab nav-tab-active"><?= $post_type; ?></a>
+        <?php else: ?>
+            <a href="?page=cap_archives&tab=<?= $post_type; ?>" class="nav-tab"><?= $post_type; ?></a>
+        <?php endif; ?>
     <?php endforeach; ?>
     </h2>
     <br/>
 
-    <?= wp_editor('', 'terms_wp_content', ['textarea_rows' => 15, 'tabindex' => 1]); ?>
+    <form method="post" action="options.php">
+        <?php settings_fields( 'extra-post-info-settings' ); ?>
+        <?php do_settings_sections( 'extra-post-info-settings' ); ?>
+        <table class="form-table">
+            <tr valign="top">
+                <?= wp_editor('', 'terms_wp_content', ['textarea_rows' => 15, 'tabindex' => 1]); ?>
+            </tr>
+        </table>
+        <?php submit_button(); ?>
+    </form>
 </div>
