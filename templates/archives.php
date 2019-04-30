@@ -2,7 +2,10 @@
 $post_types = get_post_types('', 'names');
 $post_types = array_diff($post_types, ['attachment', 'revision', 'custom_css',
     'nav_menu_item', 'customize_changeset',
-    'oembed_cache', 'user_request', 'wp_block'])
+    'oembed_cache', 'user_request', 'wp_block']);
+
+    if(!isset($_GET['tab']))
+        $_GET['tab'] = $post_types['post'];
 ?>
 
 <div class="wrap">
@@ -32,7 +35,7 @@ $post_types = array_diff($post_types, ['attachment', 'revision', 'custom_css',
     </h2>
     <br/>
 
-    <form method="post" action="options.php">
+    <form method="post" action="<?= esc_html(admin_url('admin-post.php')) ?>">
         <?php settings_fields( 'extra-post-info-settings' ); ?>
         <?php do_settings_sections( 'extra-post-info-settings' ); ?>
         <table class="form-table">
@@ -40,6 +43,7 @@ $post_types = array_diff($post_types, ['attachment', 'revision', 'custom_css',
                 <?= wp_editor('', 'terms_wp_content', ['textarea_rows' => 15, 'tabindex' => 1]); ?>
             </tr>
         </table>
+        <?php wp_nonce_field('', ''); ?>
         <?php submit_button(); ?>
     </form>
 </div>
