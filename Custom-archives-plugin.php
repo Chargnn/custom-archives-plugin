@@ -61,8 +61,8 @@ if(!function_exists('cap_load')){
             die('<p>Your wordpress version is too low and might not work with this plugin!</p>');
         }
 
-        $submenu = new Cap_submenu(new Cap_submenu_page());
-        $submenu->init();
+        $admin_page = new Cap_admin_page(new Cap_page_renderer());
+        $admin_page->init();
     }
 }
 
@@ -73,6 +73,9 @@ if(!function_exists('cap_enqueue')){
     }
 }
 
+function cap_field($post_type_name){
+    return get_option('cap_wysiwyg_' . $post_type_name . '_archive');
+}
 
 register_activation_hook(__FILE__, 'cap_init');
 add_action('plugins_loaded', 'cap_load');

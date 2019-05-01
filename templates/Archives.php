@@ -1,5 +1,5 @@
 <?php
-$post_types = get_post_types('', 'names');
+$post_types = get_post_types();
 $post_types = array_diff($post_types, ['attachment', 'revision', 'custom_css',
     'nav_menu_item', 'customize_changeset',
     'oembed_cache', 'user_request', 'wp_block']);
@@ -35,15 +35,16 @@ $post_types = array_diff($post_types, ['attachment', 'revision', 'custom_css',
     </h2>
     <br/>
 
-    <form method="post" action="<?= esc_html(admin_url('admin-post.php')) ?>">
-        <?php settings_fields( 'extra-post-info-settings' ); ?>
-        <?php do_settings_sections( 'extra-post-info-settings' ); ?>
+    <form method="post" action="options.php">
+        <?php settings_fields( 'cap-field-group' ); ?>
         <table class="form-table">
             <tr valign="top">
-                <?= wp_editor('', 'terms_wp_content', ['textarea_rows' => 15, 'tabindex' => 1]); ?>
+                <?= wp_editor(esc_attr(get_option('cap_wysiwyg_' . $_GET['tab'] . '_archive')), 'terms_wp_content', ['textarea_rows' => 15,
+                                                                                           'tabindex' => 1,
+                                                                                           'textarea_name' => 'cap_wysiwyg_' . $_GET['tab'] . '_archive',
+                                                                                           'drag_drop_upload' => true]); ?>
             </tr>
         </table>
-        <?php wp_nonce_field('', ''); ?>
         <?php submit_button(); ?>
     </form>
 </div>
