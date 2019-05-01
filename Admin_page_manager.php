@@ -36,7 +36,7 @@ if(!class_exists('Cap_admin_page')){
                 'Archives',
                 'manage_options',
                 'cap_archives',
-                [$this->page_renderer, 'render']
+                [$this->page_renderer, 'render_archive']
             );
         }
 
