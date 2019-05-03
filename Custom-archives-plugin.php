@@ -34,46 +34,50 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 defined('ABSPATH') or die;
 
 // Require all dependencies
-foreach(glob(plugin_dir_path(__FILE__) . '*.php') as $file){
+foreach (glob(plugin_dir_path(__FILE__) . '*.php') as $file) {
     require_once($file);
 }
 
 /**
  * Init plugin
  */
-if(!function_exists('cap_init')){
-    function cap_init(){
+if (!class_exists('Cap_main')) {
+    class Cap_main
+    {
+        /**
+         * Run when the plugin is activated
+         */
+        public function cap_init()
+        {
+            // Check if plugin is compatible with current WP version
+            global $wp_version;
+            if (version_compare($wp_version, '4.9.10', '<')) {
+                wp_die('<p>Your wordpress version has not been tested and might not work with this plugin!</p>');
+            }
+        }
 
-        // Check if plugin is compatible with current WP version
-        global $wp_version;
-        if(version_compare($wp_version, '4.9.10', '<')){
-            die('<p>Your wordpress version is too low and might not work with this plugin!</p>');
+        /**
+         * Run when the plugin is ready and loaded
+         */
+        public function cap_load()
+        {
+            $admin_page = new Cap_admin_page(new Cap_page_renderer());
+            $admin_page->init();
+        }
+
+        /**
+         * Register style and scripts for the plugin
+         */
+        public function cap_enqueue()
+        {
+            wp_enqueue_style('capstyle', plugins_url('/assets/styles/style.css', __FILE__));
+            wp_enqueue_script('capscript', plugins_url('/assets/scripts/script.js', __FILE__));
         }
     }
 }
 
-if(!function_exists('cap_load')){
-    function cap_load(){
+$cap_main = new Cap_main();
 
-        // Check if plugin is compatible with current WP version
-        global $wp_version;
-        if(version_compare($wp_version, '4.9.10', '<')){
-            die('<p>Your wordpress version is too low and might not work with this plugin!</p>');
-        }
-
-        $submenu = new Cap_submenu(new Cap_submenu_page());
-        $submenu->init();
-    }
-}
-
-if(!function_exists('cap_enqueue')){
-    function cap_enqueue(){
-        wp_enqueue_style('capstyle', plugins_url('/assets/styles/style.css', __FILE__));
-        wp_enqueue_script('capscript', plugins_url('/assets/scripts/script.js', __FILE__));
-    }
-}
-
-
-register_activation_hook(__FILE__, 'cap_init');
-add_action('plugins_loaded', 'cap_load');
-add_action('admin_enqueue_scripts', 'cap_enqueue');
+register_activation_hook(__FILE__, [$cap_main, 'cap_init']);
+add_action('plugins_loaded', [$cap_main, 'cap_load']);
+add_action('admin_enqueue_scripts', [$cap_main, 'cap_enqueue']);
