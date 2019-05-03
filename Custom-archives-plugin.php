@@ -41,32 +41,33 @@ foreach (glob(plugin_dir_path(__FILE__) . '*.php') as $file) {
 /**
  * Init plugin
  */
-if (!class_exists('Cap_core')) {
-    class Cap_core
+if (!class_exists('Cap_main')) {
+    class Cap_main
     {
+        /**
+         * Run when the plugin is activated
+         */
         public function cap_init()
         {
-
             // Check if plugin is compatible with current WP version
             global $wp_version;
             if (version_compare($wp_version, '4.9.10', '<')) {
-                die('<p>Your wordpress version is too low and might not work with this plugin!</p>');
+                wp_die('<p>Your wordpress version has not been tested and might not work with this plugin!</p>');
             }
         }
 
+        /**
+         * Run when the plugin is ready and loaded
+         */
         public function cap_load()
         {
-
-            // Check if plugin is compatible with current WP version
-            global $wp_version;
-            if (version_compare($wp_version, '4.9.10', '<')) {
-                die('<p>Your wordpress version is too low and might not work with this plugin!</p>');
-            }
-
             $admin_page = new Cap_admin_page(new Cap_page_renderer());
             $admin_page->init();
         }
 
+        /**
+         * Register style and scripts for the plugin
+         */
         public function cap_enqueue()
         {
             wp_enqueue_style('capstyle', plugins_url('/assets/styles/style.css', __FILE__));
@@ -75,9 +76,8 @@ if (!class_exists('Cap_core')) {
     }
 }
 
+$cap_main = new Cap_main();
 
-$cap_core = new Cap_core();
-
-register_activation_hook(__FILE__, [$cap_core, 'cap_init']);
-add_action('plugins_loaded', [$cap_core, 'cap_load']);
-add_action('admin_enqueue_scripts', [$cap_core, 'cap_enqueue']);
+register_activation_hook(__FILE__, [$cap_main, 'cap_init']);
+add_action('plugins_loaded', [$cap_main, 'cap_load']);
+add_action('admin_enqueue_scripts', [$cap_main, 'cap_enqueue']);
