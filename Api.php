@@ -17,10 +17,5 @@ function cap_field($post_type_name)
  * @return array
  */
 function cap_get_post_types(){
-    $post_types = get_post_types();
-    $post_types = array_diff($post_types, ['attachment', 'revision', 'custom_css',
-        'nav_menu_item', 'customize_changeset',
-        'oembed_cache', 'user_request', 'wp_block']);
-
-    return $post_types;
+    return apply_filters('cap_post_types_array', '');
 }

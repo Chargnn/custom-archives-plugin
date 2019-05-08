@@ -76,6 +76,15 @@ if (!class_exists('Cap_main')) {
     }
 }
 
+add_filter('cap_post_types_array', function(){
+    $post_types = get_post_types();
+    $post_types = array_diff($post_types, ['attachment', 'revision', 'custom_css',
+        'nav_menu_item', 'customize_changeset',
+        'oembed_cache', 'user_request', 'wp_block']);
+
+    return $post_types;
+});
+
 $cap_main = new Cap_main();
 
 register_activation_hook(__FILE__, [$cap_main, 'cap_init']);
