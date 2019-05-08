@@ -33,11 +33,6 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 defined('ABSPATH') or die;
 
-// Require all dependencies
-foreach (glob(plugin_dir_path(__FILE__) . '*.php') as $file) {
-    require_once($file);
-}
-
 /**
  * Init plugin
  */
@@ -61,6 +56,11 @@ if (!class_exists('Cap_main')) {
          */
         public function cap_load()
         {
+            require_once(plugin_dir_path(__FILE__) . '/Cap_admin_page.php');
+            require_once(plugin_dir_path(__FILE__) . '/api.php');
+            require_once(plugin_dir_path(__FILE__) . '/Page_renderer.php');
+            require_once(plugin_dir_path(__FILE__) . '/templates/notices/cap_admin_notices.php');
+
             $admin_page = new Cap_admin_page(new Cap_page_renderer());
             $admin_page->init();
         }
@@ -90,3 +90,7 @@ $cap_main = new Cap_main();
 register_activation_hook(__FILE__, [$cap_main, 'cap_init']);
 add_action('plugins_loaded', [$cap_main, 'cap_load']);
 add_action('admin_enqueue_scripts', [$cap_main, 'cap_enqueue']);
+
+add_action('cap_admin_tabs', function(){
+    require_once(plugin_dir_path(__FILE__) . '/templates/tabs/cap_admin_tabs.php');
+});
